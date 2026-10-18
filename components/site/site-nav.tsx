@@ -56,8 +56,10 @@ export function SiteNav() {
   return (
     <>
     <header
-      className={`fixed inset-x-0 top-0 z-50 border-b bg-background transition-colors duration-500 ${
-        scrolled || open ? "border-border" : "border-border/60"
+      className={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-500 ${
+        scrolled || open
+          ? "border-border bg-background/85 backdrop-blur-md"
+          : "border-transparent bg-transparent"
       }`}
     >
       <nav className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4 md:px-10">
