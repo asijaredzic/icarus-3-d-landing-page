@@ -1,5 +1,4 @@
 import type { ReactNode } from "react"
-import { ArchFrame } from "./arch-frame"
 
 // Standard page hero header so every sub-page shares the landing's cathedral feel.
 export function PageShell({
@@ -19,7 +18,6 @@ export function PageShell({
 }) {
   return (
     <div className="relative min-h-screen pb-24 pt-28 md:pt-36">
-      <ArchFrame className="pointer-events-none absolute left-1/2 top-20 h-[70vh] w-[min(90vw,640px)] -translate-x-1/2 opacity-70" />
 
       <div className="relative mx-auto w-full max-w-7xl px-6 md:px-10">
         <header className="border-b border-border/50 pb-10">

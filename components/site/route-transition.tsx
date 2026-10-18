@@ -1,118 +1,43 @@
 "use client"
 
-import type { CSSProperties, ReactElement } from "react"
+import type { CSSProperties } from "react"
 import { usePathname } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
+import { markTransition } from "@/lib/transition-state"
 
-// Each route wipes in with a self-drawing line illustration from the Icarus
-// myth and a matching "chapter" beat. Two panels close over the screen, an
-// ember horizon flares along the seam, the motif draws itself, then it all
-// pulls away.
-
-const BEATS: Record<string, { tag: string; title: string }> = {
-  "/": { tag: "Prologue", title: "The Workshop" },
-  "/about": { tag: "Chapter I", title: "The Makers" },
-  "/car": { tag: "Chapter II", title: "The Wings" },
-  "/journey": { tag: "Chapter III", title: "The Flight" },
-  "/sponsors": { tag: "Chapter IV", title: "Those Who Lift Us" },
-  "/contact": { tag: "Chapter V", title: "The Call" },
+const BEATS: Record<string, string> = {
+  "/": "Home",
+  "/about": "About",
+  "/car": "Our Car",
+  "/journey": "Journey",
+  "/sponsors": "Sponsors",
+  "/contact": "Contact",
 }
 
-const draw = (i: number) =>
-  ({
-    "data-draw": true,
-    pathLength: 1,
-    style: { ["--d" as string]: `${(i * 0.07).toFixed(2)}s` } as CSSProperties,
-  }) as const
+const BANDS = ["var(--ember)", "var(--flame)", "var(--crimson)", "var(--steel)"]
 
-function Motif({ pathname }: { pathname: string }) {
-  const common = {
-    fill: "none",
-    stroke: "var(--ember)",
-    strokeWidth: 1.3,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-  }
-  const glow = { filter: "drop-shadow(0 0 6px color-mix(in srgb, var(--ember) 70%, transparent))" }
+const DURATION = 1600
 
-  let content: ReactElement
-
-  if (pathname.startsWith("/about")) {
-    // two mirrored wings taking shape
-    content = (
-      <g {...common}>
-        <path {...draw(0)} d="M110 74 L110 122" />
-        <path {...draw(1)} d="M110 90 C82 74 58 76 36 92" />
-        <path {...draw(2)} d="M110 98 C84 86 62 90 44 106" />
-        <path {...draw(3)} d="M110 106 C88 98 70 102 54 118" />
-        <path {...draw(1)} d="M110 90 C138 74 162 76 184 92" />
-        <path {...draw(2)} d="M110 98 C136 86 158 90 176 106" />
-        <path {...draw(3)} d="M110 106 C132 98 150 102 166 118" />
-      </g>
-    )
-  } else if (pathname.startsWith("/car")) {
-    // a single engineered wing
-    content = (
-      <g {...common}>
-        <path {...draw(0)} d="M42 66 C88 70 150 88 196 132" />
-        <path {...draw(1)} d="M72 72 L64 100" />
-        <path {...draw(2)} d="M98 80 L90 112" />
-        <path {...draw(3)} d="M124 92 L116 126" />
-        <path {...draw(4)} d="M150 106 L142 140" />
-        <path {...draw(5)} d="M176 122 L169 152" />
-      </g>
-    )
-  } else if (pathname.startsWith("/journey")) {
-    // the flight arc toward the sun
-    content = (
-      <g {...common}>
-        <path {...draw(0)} d="M22 158 Q 110 -8 198 158" />
-        <circle {...draw(2)} cx={110} cy={42} r={13} />
-        <path {...draw(3)} d="M64 116 C60 110 55 110 50 114" />
-        <path {...draw(3)} d="M78 116 C82 110 87 110 92 114" />
-        <circle {...draw(4)} cx={71} cy={116} r={3.4} />
-      </g>
-    )
-  } else if (pathname.startsWith("/sponsors")) {
-    // updrafts / thermals that lift the flight
-    content = (
-      <g {...common}>
-        <path {...draw(0)} d="M62 162 C52 132 76 118 64 88 C56 68 72 56 64 34" />
-        <path {...draw(1)} d="M110 166 C100 134 124 120 112 88 C104 66 120 54 112 30" />
-        <path {...draw(2)} d="M158 162 C148 132 172 118 160 88 C152 68 168 56 160 34" />
-      </g>
-    )
-  } else if (pathname.startsWith("/contact")) {
-    // the radiant sun — the call
-    content = (
-      <g {...common}>
-        <circle {...draw(0)} cx={110} cy={92} r={28} />
-        <path {...draw(1)} d="M150 92 L170 92" />
-        <path {...draw(1)} d="M70 92 L50 92" />
-        <path {...draw(2)} d="M110 52 L110 32" />
-        <path {...draw(2)} d="M110 132 L110 152" />
-        <path {...draw(3)} d="M138 64 L152 50" />
-        <path {...draw(3)} d="M82 64 L68 50" />
-        <path {...draw(4)} d="M138 120 L152 134" />
-        <path {...draw(4)} d="M82 120 L68 134" />
-      </g>
-    )
-  } else {
-    // home — the blueprint: a drafting arc, compass, and a small sun
-    content = (
-      <g {...common}>
-        <path {...draw(0)} d="M28 152 A 118 118 0 0 1 192 60" />
-        <path {...draw(1)} d="M110 40 L70 150" />
-        <path {...draw(2)} d="M110 40 L150 150" />
-        <path {...draw(3)} d="M70 150 L150 150" />
-        <circle {...draw(4)} cx={110} cy={40} r={8} />
-      </g>
-    )
-  }
-
+function RaceCar() {
   return (
-    <svg viewBox="0 0 220 190" className="h-40 w-48 md:h-52 md:w-60" style={glow} aria-hidden>
-      {content}
+    <svg viewBox="0 0 240 80" className="h-auto w-56 md:w-80" aria-hidden>
+      <rect x="0" y="18" width="30" height="6" rx="1" fill="var(--crimson)" />
+      <rect x="8" y="24" width="6" height="26" fill="var(--crimson)" />
+      <path
+        d="M10 52 L42 44 L94 40 L118 29 L152 29 L170 40 L220 44 L234 52 L228 58 L16 58 Z"
+        fill="var(--ember)"
+      />
+      <path d="M122 32 L148 32 L158 40 L116 40 Z" fill="var(--background)" />
+      <rect x="44" y="50" width="160" height="3" fill="var(--steel)" />
+      <rect x="206" y="56" width="34" height="4" rx="1" fill="var(--crimson)" />
+      <g className="wheel">
+        <circle cx="54" cy="58" r="14" fill="var(--background)" stroke="var(--foreground)" strokeWidth="2.5" />
+        <path d="M54 48 V68 M44 58 H64" stroke="var(--muted-foreground)" strokeWidth="2" />
+      </g>
+      <g className="wheel">
+        <circle cx="186" cy="59" r="13" fill="var(--background)" stroke="var(--foreground)" strokeWidth="2.5" />
+        <path d="M186 50 V68 M177 59 H195" stroke="var(--muted-foreground)" strokeWidth="2" />
+      </g>
     </svg>
   )
 }
@@ -128,29 +53,33 @@ export function RouteTransition() {
       first.current = false
       return
     }
+    markTransition(DURATION)
     setTick((t) => t + 1)
     setPlay(true)
-    const id = setTimeout(() => setPlay(false), 1500)
+    const id = setTimeout(() => setPlay(false), DURATION)
     return () => clearTimeout(id)
   }, [pathname])
 
-  const beat = BEATS[pathname] ?? BEATS["/"]
+  const label = BEATS[pathname] ?? BEATS["/"]
 
   return (
     <div key={tick} aria-hidden className={`route-tx ${play ? "is-playing" : ""}`}>
-      <div className="panel panel-top" />
-      <div className="panel panel-bottom" />
-      <span className="horizon" />
-      <div className="myth">
-        <div className="flex flex-col items-center gap-5">
-          <Motif pathname={pathname} />
-          <div className="beat flex flex-col items-center gap-1.5">
-            <span className="font-sans text-[0.58rem] uppercase tracking-[0.5em] text-ember">{beat.tag}</span>
-            <span className="font-display text-3xl uppercase tracking-[0.08em] text-foreground md:text-4xl">
-              {beat.title}
-            </span>
-          </div>
+      <div className="veil" />
+      <div className="bands">
+        {BANDS.map((color, i) => (
+          <span key={color} className="band" style={{ background: color, ["--i" as string]: i } as CSSProperties} />
+        ))}
+      </div>
+      <div className="track">
+        <div className="car">
+          <span className="speed-line" style={{ top: "38%", width: "5rem" }} />
+          <span className="speed-line" style={{ top: "58%", width: "8rem" }} />
+          <span className="speed-line" style={{ top: "76%", width: "4rem" }} />
+          <RaceCar />
         </div>
+        <span className="tx-label font-display text-3xl uppercase tracking-[0.12em] text-foreground md:text-4xl">
+          {label}
+        </span>
       </div>
     </div>
   )

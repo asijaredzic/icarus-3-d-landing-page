@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { PageShell } from "@/components/site/page-shell"
 import { Reveal } from "@/components/site/reveal"
-import { AtSign, Globe, Mail, ArrowUpRight } from "lucide-react"
+import { AtSign, Mail, ArrowUpRight } from "lucide-react"
 
 const TIERS = [
   {
@@ -37,33 +37,32 @@ export default function SponsorsPage() {
       <Reveal className="mt-16">
         <div className="relative overflow-hidden rounded-sm border border-ember/40 bg-navy/30 p-8 md:p-12">
           <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-ember/20 blur-3xl" />
-          <span className="font-sans text-[0.6rem] uppercase tracking-[0.4em] text-ember">Title backer</span>
+          <span className="font-sans text-[0.6rem] uppercase tracking-[0.4em] text-ember">
+            Where we come from · Not a sponsor
+          </span>
           <h2 className="mt-4 font-display text-[clamp(2.5rem,8vw,6rem)] uppercase leading-[0.9] tracking-tight text-balance">
             SCHOOL &amp; SCHOOL
           </h2>
           <p className="mt-5 max-w-2xl text-pretty leading-relaxed text-muted-foreground">
-            None of this exists without our school. SCHOOL &amp; SCHOOL funded the team, gave us the
-            workshop, and let us turn a corner of the building into a race shop. Every tenth we find
-            has their name on it.
+            SCHOOL &amp; SCHOOL is our base — the school our team comes from. They are not a funder
+            or a sponsor.
+          </p>
+          <p className="mt-4 max-w-2xl text-pretty leading-relaxed text-muted-foreground">
+            SCHOOL &amp; SCHOOL is multidisciplinary — a different kind of school for kids and teens.
+            Thanks to a specially designed multi-intelligence program, our students have the
+            opportunity to find their talent and passion for a specific discipline that will shape
+            their future.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
-              href="https://instagram.com"
+              href="https://www.instagram.com/schoolandschool.sarajevo/"
               target="_blank"
-              className="group inline-flex items-center gap-2 rounded-sm border border-border/60 bg-background/40 px-5 py-3 font-sans text-xs uppercase tracking-[0.2em] text-foreground transition-colors hover:border-ember hover:text-ember"
+              rel="noopener noreferrer"
+              className="group inline-flex min-h-11 items-center gap-2 rounded-sm border border-border/60 bg-background/40 px-5 py-3 font-sans text-xs uppercase tracking-[0.2em] text-foreground transition-colors hover:border-ember hover:text-ember"
             >
               <AtSign className="h-4 w-4" />
-              @schoolandschool
-              <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </Link>
-            <Link
-              href="https://schoolandschool.edu"
-              target="_blank"
-              className="group inline-flex items-center gap-2 rounded-sm border border-border/60 bg-background/40 px-5 py-3 font-sans text-xs uppercase tracking-[0.2em] text-foreground transition-colors hover:border-ember hover:text-ember"
-            >
-              <Globe className="h-4 w-4" />
-              schoolandschool.edu
+              schoolandschool.sarajevo
               <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </Link>
           </div>

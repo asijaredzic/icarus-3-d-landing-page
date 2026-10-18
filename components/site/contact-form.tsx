@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react"
 import { Send, Check } from "lucide-react"
+import { TEAM_EMAIL } from "@/lib/contact"
 
 const SUBJECTS = ["Sponsorship", "Join the team", "Press", "General"]
 
@@ -11,7 +12,13 @@ export function ContactForm() {
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    // Makeshift: no backend wired yet — show a success state.
+    const data = new FormData(e.currentTarget)
+    const name = String(data.get("name") ?? "").trim()
+    const email = String(data.get("email") ?? "").trim()
+    const message = String(data.get("message") ?? "").trim()
+    const body = `${message}\n\n— ${name} (${email})`
+    const href = `mailto:${TEAM_EMAIL}?subject=${encodeURIComponent(`[${subject}] ${name}`)}&body=${encodeURIComponent(body)}`
+    window.location.href = href
     setSent(true)
   }
 
@@ -24,9 +31,14 @@ export function ContactForm() {
         <div className="flex h-16 w-16 items-center justify-center rounded-full border border-ember/50 bg-ember/10">
           <Check className="h-7 w-7 text-ember" />
         </div>
-        <h3 className="mt-6 font-display text-3xl uppercase tracking-wide">Signal received</h3>
+        <h3 className="mt-6 font-display text-3xl uppercase tracking-wide">Almost there</h3>
         <p className="mt-3 max-w-sm text-sm text-muted-foreground">
-          Thanks for reaching out to Icarus. Our crew will get back to you before the next sunrise.
+          Your mail app should have opened with the message ready — just hit send. If it didn&apos;t,
+          email us directly at{" "}
+          <a href={`mailto:${TEAM_EMAIL}`} className="text-ember underline underline-offset-4">
+            {TEAM_EMAIL}
+          </a>
+          .
         </p>
         <button
           onClick={() => setSent(false)}

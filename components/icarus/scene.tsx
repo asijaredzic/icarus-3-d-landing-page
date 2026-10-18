@@ -9,6 +9,9 @@ import * as THREE from "three"
 import { Sun } from "./sun"
 import { Starfield } from "./starfield"
 
+// module-level so the effect isn't rebuilt on every render
+const CA_OFFSET = new THREE.Vector2(0.0003, 0.0004)
+
 const easeInOut = (x: number) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2)
 
 // Scroll-driven Icarus intro. progress 0 = pressed against the sun's surface
@@ -22,7 +25,22 @@ export function Scene({
   entered: boolean
 }) {
   const sunGroup = useRef<THREE.Group>(null)
-  const { camera } = useThree()
+  const { camera, size } = useThree()
+  // Mobile keeps its tuned framing. From tablet up the sun is sized off the
+  // visible frustum at the settled camera distance, so it fills the right side
+  // and bleeds off the edge instead of shrinking into a small ball.
+  let settledX = 3.0
+  let settledScale = 1.5
+  if (size.width >= 768) {
+    const SETTLED_Z = 8.6
+    const LOOK_X = 0.85
+    const SUN_RADIUS = 1.35
+    const halfH = SETTLED_Z * Math.tan(THREE.MathUtils.degToRad(45 / 2))
+    const halfW = halfH * (size.width / size.height)
+    const r = Math.min(halfH * 0.64, halfW * 0.28)
+    settledScale = r / SUN_RADIUS
+    settledX = LOOK_X + halfW - r * 1.25 - halfW * 0.1
+  }
 
   useFrame((state, delta) => {
     const d = Math.min(delta, 1 / 30)
@@ -42,9 +60,9 @@ export function Scene({
 
     if (sunGroup.current) {
       const breath = 1 + Math.sin(t * 0.5) * 0.012
-      sunGroup.current.scale.setScalar(THREE.MathUtils.lerp(2.0, 1.5, e) * breath)
+      sunGroup.current.scale.setScalar(THREE.MathUtils.lerp(2.0, settledScale, e) * breath)
       sunGroup.current.position.set(
-        THREE.MathUtils.lerp(0, 3.0, e),
+        THREE.MathUtils.lerp(0, settledX, e),
         THREE.MathUtils.lerp(0, 0.4, e),
         0,
       )
@@ -60,11 +78,11 @@ export function Scene({
         <Sun />
       </group>
 
-      <EffectComposer>
+      <EffectComposer multisampling={0}>
         <Bloom intensity={0.78} luminanceThreshold={0.4} luminanceSmoothing={0.9} mipmapBlur radius={0.7} />
         <ChromaticAberration
           blendFunction={BlendFunction.NORMAL}
-          offset={new THREE.Vector2(0.0003, 0.0004)}
+          offset={CA_OFFSET}
           radialModulation={false}
           modulationOffset={0}
         />

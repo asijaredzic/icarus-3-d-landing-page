@@ -8,6 +8,8 @@ import { NAV } from "@/lib/nav"
 import { LogoMark } from "./logo"
 import { useSiteAudio } from "@/components/audio/audio-provider"
 
+const BRAND = "ICARUS".split("")
+
 function SoundToggle() {
   const { enabled, toggle } = useSiteAudio()
   return (
@@ -41,28 +43,44 @@ export function SiteNav() {
 
   useEffect(() => setOpen(false), [pathname])
 
+  // only touch overflow while the menu is open, so it never unlocks the home intro
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : ""
+    if (!open) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = "hidden"
     return () => {
-      document.body.style.overflow = ""
+      document.body.style.overflow = prev
     }
   }, [open])
 
   return (
+    <>
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
-        scrolled ? "border-b border-border/60 bg-background/70 backdrop-blur-md" : "border-b border-transparent"
+      className={`fixed inset-x-0 top-0 z-50 border-b bg-background transition-colors duration-500 ${
+        scrolled || open ? "border-border" : "border-border/60"
       }`}
     >
       <nav className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4 md:px-10">
         <Link href="/" className="group flex items-center gap-3">
           {/* reserved logo slot */}
-          <span className="flex h-9 w-9 items-center justify-center border border-border/70 bg-navy-deep/60 transition-colors group-hover:border-ember/60">
+          <span className="nav-mark flex h-9 w-9 items-center justify-center border border-border/70 bg-navy-deep/60 transition-[border-color,box-shadow] duration-300">
             <LogoMark className="h-6 w-6" />
           </span>
           <span className="flex flex-col leading-none">
-            <span className="font-display text-2xl uppercase tracking-[0.16em] text-foreground">Icarus</span>
-            <span className="font-sans text-[0.55rem] uppercase tracking-[0.42em] text-muted-foreground">
+            <span className="relative overflow-hidden font-display text-2xl uppercase tracking-[0.16em] text-foreground">
+              <span className="sr-only">Icarus</span>
+              <span aria-hidden>
+                {BRAND.map((ch, i) => (
+                  <span key={i} className="nav-letter" style={{ animationDelay: `${300 + i * 55}ms` }}>
+                    {ch}
+                  </span>
+                ))}
+              </span>
+              <span aria-hidden className="nav-glint">
+                ICARUS
+              </span>
+            </span>
+            <span className="nav-sub font-sans text-[0.55rem] uppercase tracking-[0.42em] text-muted-foreground">
               STEM Racing
             </span>
           </span>
@@ -106,10 +124,11 @@ export function SiteNav() {
           </button>
         </div>
       </nav>
+    </header>
 
-      {/* mobile overlay */}
+      {/* mobile overlay — kept outside the header so it truly covers the viewport */}
       <div
-        className={`fixed inset-0 top-0 z-40 flex flex-col bg-background/95 backdrop-blur-xl transition-all duration-500 md:hidden ${
+        className={`fixed inset-0 z-40 flex flex-col overflow-y-auto bg-background pb-10 transition-opacity duration-500 md:hidden ${
           open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         }`}
       >
@@ -120,10 +139,11 @@ export function SiteNav() {
               <li
                 key={item.href}
                 style={{
+                  transitionProperty: "opacity, transform",
+                  transitionDuration: "500ms",
                   transitionDelay: open ? `${120 + i * 60}ms` : "0ms",
                   transform: open ? "translateY(0)" : "translateY(16px)",
                   opacity: open ? 1 : 0,
-                  transition: "opacity .5s, transform .5s",
                 }}
               >
                 <Link
@@ -140,6 +160,6 @@ export function SiteNav() {
           })}
         </ul>
       </div>
-    </header>
+    </>
   )
 }

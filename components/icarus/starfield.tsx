@@ -68,10 +68,10 @@ export function Starfield() {
         />
       </mesh>
       <group ref={farRef}>
-        <Stars radius={60} depth={40} count={2600} factor={3.4} saturation={0} fade speed={0.4} />
+        <Stars radius={60} depth={40} count={6000} factor={3.4} saturation={0} fade speed={0.4} />
       </group>
       <group ref={nearRef}>
-        <Stars radius={30} depth={20} count={900} factor={5} saturation={0} fade speed={0.6} />
+        <Stars radius={30} depth={20} count={2200} factor={5} saturation={0} fade speed={0.6} />
       </group>
     </group>
   )

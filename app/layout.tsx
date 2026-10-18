@@ -6,6 +6,7 @@ import { SiteFooter } from "@/components/site/footer"
 import { CosmicBackground } from "@/components/site/cosmic-background"
 import { Grain } from "@/components/site/grain"
 import { RouteTransition } from "@/components/site/route-transition"
+import { ScrollProgress } from "@/components/site/scroll-progress"
 import { AudioProvider } from "@/components/audio/audio-provider"
 import "./globals.css"
 
@@ -23,6 +24,7 @@ export const viewport: Viewport = {
   themeColor: "#04060e",
   width: "device-width",
   initialScale: 1,
+  maximumScale: 1,
 }
 
 export default function RootLayout({
@@ -37,6 +39,7 @@ export default function RootLayout({
           <CosmicBackground />
           <SiteNav />
           <RouteTransition />
+        <ScrollProgress />
           <main className="relative z-10">{children}</main>
           <SiteFooter />
           <Grain />

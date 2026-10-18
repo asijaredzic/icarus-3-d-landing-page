@@ -2,12 +2,13 @@ import Link from "next/link"
 import { PageShell } from "@/components/site/page-shell"
 import { Reveal } from "@/components/site/reveal"
 import { ContactForm } from "@/components/site/contact-form"
-import { AtSign, Globe, Mail } from "lucide-react"
+import { AtSign, Mail, Phone } from "lucide-react"
+import { TEAM_EMAIL } from "@/lib/contact"
 
 const CHANNELS = [
-  { icon: Mail, label: "Email", value: "team@icarusracing.dev", href: "mailto:team@icarusracing.dev" },
-  { icon: AtSign, label: "Instagram", value: "@icarus.racing", href: "https://instagram.com" },
-  { icon: Globe, label: "School", value: "schoolandschool.edu", href: "https://schoolandschool.edu" },
+  { icon: Mail, label: "Email", value: TEAM_EMAIL, href: `mailto:${TEAM_EMAIL}` },
+  { icon: Phone, label: "Phone", value: "62079054", href: "tel:+38762079054" },
+  { icon: AtSign, label: "Instagram", value: "@icarus.stem", href: "https://www.instagram.com/icarus.stem/" },
 ]
 
 export default function ContactPage() {

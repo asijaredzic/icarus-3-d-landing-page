@@ -1,80 +1,14 @@
 "use client"
 
 import Link from "next/link"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { memo, useCallback, useEffect, useRef, useState, type MutableRefObject } from "react"
 import { Canvas } from "@react-three/fiber"
 import { ArrowUpRight, ArrowRight } from "lucide-react"
 import { Scene } from "./scene"
+import { IntroLoader } from "./intro-loader"
 import { useSiteAudio } from "@/components/audio/audio-provider"
 
-const RING = 2 * Math.PI * 52 // circumference of the ignition ring
-
 type Phase = "loading" | "gate" | "reveal" | "done"
-
-/* ---------------- loading screen (ignition) ---------------- */
-function IntroLoader({ onDone }: { onDone: () => void }) {
-  const [count, setCount] = useState(0)
-  const [hide, setHide] = useState(false)
-
-  useEffect(() => {
-    let raf = 0
-    const startTime = performance.now()
-    const dur = 1900
-    const tick = (now: number) => {
-      const p = Math.min((now - startTime) / dur, 1)
-      // easeOutCubic for a lovely settle at 100
-      const eased = 1 - Math.pow(1 - p, 3)
-      setCount(Math.round(eased * 100))
-      if (p < 1) {
-        raf = requestAnimationFrame(tick)
-      } else {
-        setTimeout(() => {
-          setHide(true)
-          setTimeout(onDone, 720)
-        }, 260)
-      }
-    }
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
-  }, [onDone])
-
-  return (
-    <div
-      className={`absolute inset-0 z-50 flex flex-col items-center justify-center bg-navy-deep transition-opacity duration-700 ${
-        hide ? "pointer-events-none opacity-0" : "opacity-100"
-      }`}
-    >
-      <div className="relative flex h-44 w-44 items-center justify-center">
-        {/* soft ember glow behind the ring (circular, no box artifact) */}
-        <span
-          aria-hidden
-          className="pointer-events-none absolute h-40 w-40 rounded-full"
-          style={{ background: "radial-gradient(circle, color-mix(in oklch, var(--ember) 26%, transparent) 0%, transparent 68%)" }}
-        />
-        <svg viewBox="0 0 120 120" className="absolute inset-6 -rotate-90">
-          <circle cx="60" cy="60" r="52" stroke="var(--border)" strokeWidth="2" fill="none" />
-          <circle
-            cx="60"
-            cy="60"
-            r="52"
-            stroke="var(--ember)"
-            strokeWidth="2.5"
-            fill="none"
-            strokeLinecap="round"
-            strokeDasharray={RING}
-            strokeDashoffset={RING * (1 - count / 100)}
-            style={{ filter: "drop-shadow(0 0 8px var(--ember))" }}
-          />
-        </svg>
-        <span className="font-display text-5xl tracking-tight text-foreground tabular-nums">{count}</span>
-      </div>
-      <p className="mt-8 font-script text-3xl text-ember">Icarus</p>
-      <p className="mt-1 font-sans text-[0.6rem] uppercase tracking-[0.6em] text-muted-foreground">
-        Ignition Sequence
-      </p>
-    </div>
-  )
-}
 
 /* ---------------- enter gate (at the surface of the sun) ---------------- */
 function EnterGate({ onEnter }: { onEnter: () => void }) {
@@ -103,43 +37,69 @@ function EnterGate({ onEnter }: { onEnter: () => void }) {
 }
 
 /* ---------------- landing hero copy (revealed after the pull-away) ---------------- */
+const STRIPES = [
+  { color: "var(--ember)", grow: 4 },
+  { color: "var(--flame)", grow: 3 },
+  { color: "var(--crimson)", grow: 2 },
+  { color: "var(--steel)", grow: 1.2 },
+]
+
 function HeroCopy() {
-  const letters = "ICARUS".split("")
   return (
-    <div className="max-w-3xl">
-      <div className="flex items-center gap-4 font-sans text-[0.62rem] uppercase tracking-[0.42em] text-ember">
-        <span className="h-px w-10 bg-ember/60" />
-        STEM Racing · Team Icarus
+    <div className="max-w-3xl md:max-w-[min(48rem,54%)] lg:max-w-[min(44rem,50%)]">
+      <div
+        className="hero-in flex items-center gap-4 font-sans text-[0.62rem] uppercase tracking-[0.42em] text-ember"
+        style={{ animationDelay: "0ms" }}
+      >
+        <span className="h-px w-10 shrink-0 bg-ember/70" />
+        <span className="text-balance">STEM Racing · Team Icarus</span>
       </div>
 
-      <p className="mt-5 font-script text-4xl leading-[0.8] text-ember/90 md:text-5xl">chasing the</p>
+      <p
+        className="hero-in script-lift mt-6 font-script text-5xl leading-[0.9] md:mt-5 md:text-[clamp(2.75rem,min(4.6vw,7.5svh),4.5rem)]"
+        style={{ animationDelay: "250ms" }}
+      >
+        the rising of
+      </p>
 
-      <div className="relative -mt-1">
-        <h1 className="wordmark-glow font-display text-[clamp(4rem,18vw,15rem)] uppercase leading-[0.78] tracking-[0.02em]">
-          {letters.map((c, i) => (
-            <span key={i} className="letter" style={{ animationDelay: `${120 + i * 70}ms` }}>
-              {c}
-            </span>
-          ))}
+      <div className="relative mt-1 inline-flex flex-col">
+        <h1 className="wordmark-glow wordmark-ignite relative whitespace-nowrap font-display text-[clamp(4rem,19vw,15rem)] uppercase md:text-[clamp(5rem,min(11vw,17svh),11rem)] leading-[0.8] tracking-[0.02em]" style={{ animationDelay: "380ms, 2300ms" }}>
+          ICARUS
+          <span aria-hidden className="wordmark-sheen">
+            ICARUS
+          </span>
         </h1>
+
+        <div className="mt-4 flex w-full items-center gap-2 pl-1 pr-2 md:gap-3" aria-hidden>
+          {STRIPES.map((s, i) => (
+            <span
+              key={s.color}
+              className="hero-stripe h-1.5 md:h-2"
+              style={{ background: s.color, flexGrow: s.grow, animationDelay: `${1300 + i * 90}ms` }}
+            />
+          ))}
+        </div>
       </div>
 
-      <p className="mt-4 max-w-xl text-pretty text-base leading-relaxed text-foreground/80 md:text-lg">
+      <p
+        className="hero-in mt-6 max-w-xl text-pretty text-base leading-relaxed text-foreground/85 md:text-lg"
+        style={{ animationDelay: "1500ms" }}
+      >
         Five students, one garage, and a car built to catch light and not get burned. This is our
         run at the STEM Racing world finals.
       </p>
 
-      <div className="mt-8 flex flex-wrap items-center gap-4">
+      <div className="hero-in mt-8 flex flex-wrap items-center gap-4" style={{ animationDelay: "1700ms" }}>
         <Link
           href="/car"
-          className="group inline-flex items-center gap-2 rounded-sm bg-ember px-7 py-3 font-sans text-xs uppercase tracking-[0.24em] text-background transition-all hover:shadow-[0_0_40px_-6px_var(--ember)]"
+          className="cta-cut group inline-flex min-h-11 items-center gap-2 bg-ember py-3 pl-7 pr-9 font-sans text-xs uppercase tracking-[0.24em] text-background transition-all hover:shadow-[0_0_40px_-6px_var(--ember)]"
         >
           Meet the car
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
         </Link>
         <Link
           href="/about"
-          className="group inline-flex items-center gap-2 rounded-sm border border-steel/50 px-7 py-3 font-sans text-xs uppercase tracking-[0.24em] text-foreground transition-colors hover:border-steel hover:text-steel"
+          className="group inline-flex min-h-11 items-center gap-2 rounded-sm border border-steel/50 px-7 py-3 font-sans text-xs uppercase tracking-[0.24em] text-foreground transition-colors hover:border-steel hover:text-steel"
         >
           Our story
           <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -148,6 +108,36 @@ function HeroCopy() {
     </div>
   )
 }
+
+/* Memoized so the per-frame overlay progress state never re-renders the WebGL
+   tree (re-renders were recompiling post effects and causing flicker). */
+const SunCanvas = memo(function SunCanvas({
+  progressRef,
+  entered,
+}: {
+  progressRef: MutableRefObject<number>
+  entered: boolean
+}) {
+  return (
+    <div className="absolute inset-0 bg-navy-deep">
+      <Canvas
+        className="absolute inset-0"
+        style={{ position: "absolute", inset: 0 }}
+        gl={{ antialias: false, powerPreference: "default", alpha: false, stencil: false }}
+        dpr={[1, 1.5]}
+        resize={{ scroll: false, debounce: { scroll: 0, resize: 120 } }}
+        camera={{ position: [0, 0.2, 3.4], fov: 45 }}
+        onCreated={({ gl }) => {
+          gl.setClearColor("#05070f", 1)
+          // let the browser restore a dropped context instead of leaving a black frame
+          gl.domElement.addEventListener("webglcontextlost", (e) => e.preventDefault(), false)
+        }}
+      >
+        <Scene progressRef={progressRef} entered={entered} />
+      </Canvas>
+    </div>
+  )
+})
 
 export function Experience() {
   const [phase, setPhase] = useState<Phase>("loading")
@@ -198,21 +188,11 @@ export function Experience() {
 
   const entered = phase === "reveal" || phase === "done"
   const copyOpacity = Math.min(1, Math.max(0, (p - 0.42) / 0.34))
-  const showCopy = entered && p > 0.42
+  const showCopy = entered && p > 0.5
 
   return (
     <section className="relative h-[100svh] min-h-[640px] w-full overflow-hidden">
-      <div className="absolute inset-0">
-        <Canvas
-          className="absolute inset-0"
-          style={{ position: "absolute", inset: 0 }}
-          gl={{ antialias: true, powerPreference: "high-performance" }}
-          dpr={[1, 2]}
-          camera={{ position: [0, 0.2, 3.4], fov: 45 }}
-        >
-          <Scene progressRef={progressRef} entered={entered} />
-        </Canvas>
-      </div>
+      <SunCanvas progressRef={progressRef} entered={entered} />
 
       {/* legibility washes — only meaningful once the hero has settled */}
       <div
@@ -226,7 +206,7 @@ export function Experience() {
       {/* vertical side label */}
       {entered && (
         <span
-          className="vertical-rl absolute left-6 top-1/2 hidden -translate-y-1/2 font-sans text-[0.62rem] uppercase tracking-[0.5em] text-muted-foreground transition-opacity duration-500 md:block"
+          className="vertical-rl absolute left-8 top-1/2 hidden -translate-y-1/2 font-sans text-[0.62rem] uppercase tracking-[0.5em] text-muted-foreground transition-opacity duration-500 2xl:block"
           style={{ opacity: copyOpacity }}
         >
           STEM Racing World Finals · 2025
@@ -234,18 +214,14 @@ export function Experience() {
       )}
 
       {/* landing hero copy */}
-      <div className="relative z-10 mx-auto flex h-full w-full max-w-7xl flex-col justify-end px-6 pb-16 md:px-10 md:pb-24">
-        {showCopy && (
-          <div style={{ opacity: copyOpacity }}>
-            <HeroCopy />
-          </div>
-        )}
+      <div className="relative z-10 mx-auto flex h-full w-full max-w-7xl flex-col justify-end px-6 pb-16 md:justify-center md:px-10 md:pb-16 md:pt-28 lg:px-12">
+        {showCopy && <HeroCopy />}
       </div>
 
       {/* poster-style credits */}
       {entered && (
         <div
-          className="pointer-events-none absolute bottom-6 right-6 hidden flex-col items-end gap-1 text-right transition-opacity duration-500 md:flex"
+          className="pointer-events-none absolute bottom-6 right-8 hidden flex-col items-end gap-1 text-right transition-opacity duration-500 lg:flex"
           style={{ opacity: copyOpacity }}
         >
           <span className="font-sans text-[0.58rem] uppercase tracking-[0.34em] text-muted-foreground">

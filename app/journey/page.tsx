@@ -36,7 +36,7 @@ export default function JourneyPage() {
       eyebrow="The Build"
       title="Sketch"
       stroke="to Start line"
-      intro="How a school project became a car on the STEM Racing grid — the honest, unglamorous, deeply fun version."
+      intro="We're still preparing everything. The prototype is in testing, and these are the steps we're working through before race day."
     >
       <div className="mt-16">
         {STEPS.map((s, i) => (
@@ -60,7 +60,7 @@ export default function JourneyPage() {
 
       <Reveal className="mt-14">
         <p className="max-w-xl font-script text-3xl text-ember">
-          Still building. Always one tenth away from happy.
+          Still preparing. More soon.
         </p>
       </Reveal>
     </PageShell>

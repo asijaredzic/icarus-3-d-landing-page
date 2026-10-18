@@ -1,13 +1,32 @@
 import { PageShell } from "@/components/site/page-shell"
 import { Reveal } from "@/components/site/reveal"
 
-// Placeholder crew — swap names/roles for the real five.
 const CREW = [
-  { name: "Kaan", role: "Team Principal", note: "Keeps five stubborn people pointed the same way." },
-  { name: "Mara", role: "Design Engineer", note: "Lives in CAD and CFD. Hates drag more than anyone." },
-  { name: "Theo", role: "Manufacturing", note: "CNC, sandpaper, superglue. Makes the render real." },
-  { name: "Lena", role: "Enterprise & Sponsorship", note: "The reason we can afford carbon and canisters." },
-  { name: "Ravi", role: "Graphics & Resources", note: "Brand, portfolio, this website — the whole look." },
+  {
+    name: "Omer",
+    role: "Team Manager & Social Media Lead",
+    note: "Keeps the team organised, sets deadlines, and runs our social media.",
+  },
+  {
+    name: "Vedad",
+    role: "Chief Design Engineer",
+    note: "Leads the car's design, from the first sketch to the final shape.",
+  },
+  {
+    name: "Šemsudin",
+    role: "Manufacturing & CAD Engineer",
+    note: "Builds the CAD models and turns them into real, printed parts.",
+  },
+  {
+    name: "Ibrahim",
+    role: "Resource Manager & Engineer",
+    note: "Manages our materials and tools, and works on the engineering of the car.",
+  },
+  {
+    name: "Asija",
+    role: "Finance & Web Design Manager",
+    note: "Handles the team budget and designs and maintains this website.",
+  },
 ]
 
 export default function AboutPage() {
