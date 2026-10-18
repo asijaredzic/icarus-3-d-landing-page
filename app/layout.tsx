@@ -24,7 +24,6 @@ export const viewport: Viewport = {
   themeColor: "#04060e",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
 }
 
 export default function RootLayout({
@@ -39,7 +38,7 @@ export default function RootLayout({
           <CosmicBackground />
           <SiteNav />
           <RouteTransition />
-        <ScrollProgress />
+          <ScrollProgress />
           <main className="relative z-10">{children}</main>
           <SiteFooter />
           <Grain />

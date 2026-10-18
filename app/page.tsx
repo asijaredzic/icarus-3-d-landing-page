@@ -1,18 +1,18 @@
 import Link from "next/link"
-import { ArrowUpRight } from "lucide-react"
+import { ArrowUpRight, ArrowRight } from "lucide-react"
 import { Experience } from "@/components/icarus/experience"
 import { Reveal } from "@/components/site/reveal"
 
 const STATS = [
   { value: "0.98", unit: "sec", label: "Best track time" },
   { value: "78", unit: "km/h", label: "Top speed" },
-  { value: "20", unit: "m", label: "Race distance" },
+  { value: "20", unit: "m", label: "Track, start to finish" },
   { value: "5", unit: "crew", label: "Students, one team" },
 ]
 
 const SECTIONS = [
   { href: "/about", label: "The Crew", desc: "Five students, one classroom turned workshop." },
-  { href: "/car", label: "The Car", desc: "Helios Mk-III — machined, sanded and tuned by us." },
+  { href: "/car", label: "The Car", desc: "Helios Mk-III — explore it in 3D, machined and tuned by us." },
   { href: "/journey", label: "The Build", desc: "From a napkin sketch to the STEM Racing grid." },
   { href: "/sponsors", label: "The Backers", desc: "Led by SCHOOL & SCHOOL, who believed first." },
 ]
@@ -63,8 +63,14 @@ export default function Home() {
       </section>
 
       {/* section hub */}
-      <section className="relative mx-auto w-full max-w-7xl px-6 pb-28 md:px-10">
-        <div className="grid gap-4 md:grid-cols-2">
+      <section className="relative mx-auto w-full max-w-7xl px-6 pb-16 md:px-10">
+        <Reveal>
+          <div className="flex items-center gap-4 font-sans text-[0.65rem] uppercase tracking-[0.42em] text-steel">
+            <span>Explore</span>
+            <span className="h-px w-10 bg-steel/50" />
+          </div>
+        </Reveal>
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
           {SECTIONS.map((d, i) => (
             <Reveal key={d.href} delay={i * 80}>
               <Link
@@ -86,6 +92,45 @@ export default function Home() {
             </Reveal>
           ))}
         </div>
+      </section>
+
+      {/* CTA band */}
+      <section className="relative mx-auto w-full max-w-7xl px-6 pb-28 md:px-10">
+        <Reveal>
+          <div className="relative overflow-hidden rounded-sm border border-ember/40 bg-navy/20 p-10 text-center md:p-16">
+            <div
+              className="pointer-events-none absolute inset-0 opacity-40"
+              style={{ background: "radial-gradient(ellipse at 50% 120%, rgba(255,157,60,0.22), transparent 62%)" }}
+              aria-hidden
+            />
+            <p className="relative font-sans text-[0.62rem] uppercase tracking-[0.45em] text-ember">
+              Chasing the sun · Never falling
+            </p>
+            <h2 className="relative mt-4 font-display text-[clamp(2rem,5.4vw,4rem)] uppercase leading-[0.94] tracking-tight">
+              Follow the run at the world finals
+            </h2>
+            <p className="relative mx-auto mt-4 max-w-xl text-pretty text-base leading-relaxed text-muted-foreground">
+              Race results, build updates and the story behind every tenth — the whole run is on the
+              journey page, and the crew reads every message.
+            </p>
+            <div className="relative mt-8 flex flex-wrap items-center justify-center gap-4">
+              <Link
+                href="/journey"
+                className="cta-cut group inline-flex min-h-11 items-center gap-2 bg-ember py-3 pl-7 pr-9 font-sans text-xs uppercase tracking-[0.24em] text-background transition-all hover:shadow-[0_0_40px_-6px_var(--ember)]"
+              >
+                Follow the build
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Link>
+              <Link
+                href="/contact"
+                className="group inline-flex min-h-11 items-center gap-2 rounded-sm border border-steel/50 px-7 py-3 font-sans text-xs uppercase tracking-[0.24em] text-foreground transition-colors hover:border-steel hover:text-steel"
+              >
+                Talk to the crew
+                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </Link>
+            </div>
+          </div>
+        </Reveal>
       </section>
     </>
   )
