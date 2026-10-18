@@ -1,20 +1,19 @@
 import { PageShell } from "@/components/site/page-shell"
 import { Reveal } from "@/components/site/reveal"
-import { Car3DViewer } from "@/components/site/car-3d-viewer"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 
 const SPECS = [
   { value: "0.98", unit: "sec", label: "Best track time" },
   { value: "78", unit: "km/h", label: "Scale top speed" },
-  { value: "1", unit: "block", label: "Machined from a single block" },
-  { value: "CFD", unit: "sim", label: "Shaped in simulations" },
+  { value: "20", unit: "m", label: "Track, start to finish" },
+  { value: "1", unit: "canister", label: "CO2, one run" },
 ]
 
 const BUILD_NOTES = [
   {
     title: "Slimmed in CFD",
-    desc: "Every surface was pushed through simulations until the drag curve stopped moving. If the sim disagreed with the eye, the sim won.",
+    desc: "Every surface was pushed through airflow simulations until the drag curve stopped moving. If the sim disagreed with the eye, the sim won.",
   },
   {
     title: "Lighter wheels",
@@ -25,8 +24,8 @@ const BUILD_NOTES = [
     desc: "The tether is the quiet tenth: we re-routed the airline off the body so it stops fighting the car down the track.",
   },
   {
-    title: "Finish by hand",
-    desc: "Sanded, primed, painted — the paint is the last thing we'd ever cut, because if it's going to be quick it should look quick.",
+    title: "Finished by hand",
+    desc: "Sanded, primed, painted. The paint is the last thing we'd ever cut, because if it's going to be quick it should look quick too.",
   },
 ]
 
@@ -37,22 +36,26 @@ export default function CarPage() {
       eyebrow="Our Cars"
       title="Helios"
       stroke="Mk-III"
-      intro="Our STEM Racing car: a CO2-powered prototype machined from a single block, shaped in CFD and finished by hand. Spin it, turn it, look at it from every angle — this is the car as it sits on the bench today."
+      intro="Our STEM Racing car: a CO2-powered prototype machined from a single block, shaped in CFD and finished by hand. Small enough to hold, obsessive enough to keep us up at night."
     >
-      {/* interactive 3D model */}
+      {/* hero photo */}
       <Reveal className="mt-16">
-        <Car3DViewer />
-      </Reveal>
-
-      {/* asset note: what is needed for the real scan */}
-      <Reveal className="mt-8">
-        <p className="max-w-3xl border-l border-ember/50 pl-4 text-sm leading-relaxed text-muted-foreground">
-          Note: this is a real-time stand-in model of the Helios Mk-III. To swap in
-          the exact car, we need a scanned or exported GLB of the prototype
-          (glTF binary, under 5&nbsp;MB, +Y up, decimated under 100k triangles) —
-          drop it in and it loads straight into this viewer with photos as the
-          fallback.
-        </p>
+        <figure className="group relative overflow-hidden rounded-sm border border-border/60 bg-navy/20">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/icarus-car.jpg"
+            alt="Top-down render of the Helios Mk-III prototype, its dark body traced in ember light against a cosmic backdrop"
+            className="aspect-[16/10] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03] sm:aspect-[16/9]"
+          />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-between bg-gradient-to-t from-background/90 to-transparent px-5 pb-4 pt-14">
+            <span className="font-sans text-[0.6rem] uppercase tracking-[0.35em] text-foreground">
+              Helios Mk-III · Prototype
+            </span>
+            <span className="font-sans text-[0.6rem] uppercase tracking-[0.35em] text-muted-foreground">
+              Render by Team Icarus
+            </span>
+          </div>
+        </figure>
       </Reveal>
 
       {/* specs */}

@@ -1,5 +1,7 @@
 import { PageShell } from "@/components/site/page-shell"
 import { Reveal } from "@/components/site/reveal"
+import Link from "next/link"
+import { ArrowRight } from "lucide-react"
 
 const CREW = [
   {
@@ -85,6 +87,24 @@ export default function AboutPage() {
               </div>
             </Reveal>
           ))}
+          {/* closing card */}
+          <Reveal delay={CREW.length * 70}>
+            <Link
+              href="/journey"
+              className="group flex h-full min-h-44 flex-col items-start justify-between rounded-sm border border-ember/40 bg-ember/5 p-6 transition-colors hover:border-ember"
+            >
+              <span className="font-sans text-[0.6rem] uppercase tracking-[0.35em] text-ember">06</span>
+              <span>
+                <span className="block font-display text-3xl uppercase tracking-wide text-foreground transition-colors group-hover:text-ember">
+                  Follow the build
+                </span>
+                <span className="mt-1 flex items-center gap-2 font-sans text-[0.62rem] uppercase tracking-[0.28em] text-steel">
+                  Journey
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                </span>
+              </span>
+            </Link>
+          </Reveal>
         </div>
       </div>
     </PageShell>

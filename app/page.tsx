@@ -12,7 +12,7 @@ const STATS = [
 
 const SECTIONS = [
   { href: "/about", label: "The Crew", desc: "Five students, one classroom turned workshop." },
-  { href: "/car", label: "The Car", desc: "Helios Mk-III — explore it in 3D, machined and tuned by us." },
+  { href: "/car", label: "The Car", desc: "Helios Mk-III — machined, sanded and tuned by us." },
   { href: "/journey", label: "The Build", desc: "From a napkin sketch to the STEM Racing grid." },
   { href: "/sponsors", label: "The Backers", desc: "Led by SCHOOL & SCHOOL, who believed first." },
 ]
